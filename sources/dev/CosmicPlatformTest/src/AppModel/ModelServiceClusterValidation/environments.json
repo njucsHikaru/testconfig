@@ -1,0 +1,90 @@
+{
+  "replicas": [
+    {
+      "defaultValue": 1,
+      "resourceName": "cosmic-cluster-test-deployment",
+      "resourceKind": "Deployment",
+      "environments": {
+        "dev": 1,
+        "sdf": 1,
+        "msit": 1
+      }
+    }
+  ],
+  "aadpodidbinding": [
+    {
+      "defaultValue": "cosmic-cluster-test",
+      "resourceName": "cosmic-cluster-test-deployment",
+      "resourceKind": "Deployment",
+      "environments": {
+        "dev": "cosmic-cluster-test",
+        "sdf": "cosmic-cluster-sdf",
+        "msit": "cosmic-cluster-msit"
+      }
+    }
+  ],
+  "env": [
+    {
+      "defaultValue": [
+        {
+          "name": "KeyVaultName",
+          "value": "CosmicPlatformTest-Test"
+        }
+      ],
+      "resourceName": "cosmic-cluster-test-deployment",
+      "resourceKind": "Deployment",
+      "environments": {
+        "test": [
+          {
+            "name": "KeyVaultName",
+            "value": "CosmicPlatformTest-Test"
+          }
+        ],
+        "sdf": [
+          {
+            "name": "KeyVaultName",
+            "value": "CosmicPlatformTest-SDF"
+          }
+        ],
+        "msit": [
+          {
+            "name": "KeyVaultName",
+            "value": "CosmicPlatformTest-MSIT"
+          }
+        ]
+      }
+    }
+  ],
+  "hpa": [
+    {
+      "defaultValue": 
+      {
+        "minReplicas": 1,
+        "maxReplicas": 3,
+        "targetCPUUtilizationPercentage": 60
+      },
+      "resourceName": "cosmic-cluster-test-hpa",
+      "resourceKind": "HorizontalPodAutoscaler",
+      "environments": {
+        "test":
+        {
+          "minReplicas": 1,
+          "maxReplicas": 3,
+          "targetCPUUtilizationPercentage": 60
+        },        
+        "sdf": 
+        {
+          "minReplicas": 1,
+          "maxReplicas": 3,
+          "targetCPUUtilizationPercentage": 70
+        },
+        "msit": 
+        {
+          "minReplicas": 1,
+          "maxReplicas": 3,
+          "targetCPUUtilizationPercentage": 70
+        }
+      }
+    }
+  ]
+}

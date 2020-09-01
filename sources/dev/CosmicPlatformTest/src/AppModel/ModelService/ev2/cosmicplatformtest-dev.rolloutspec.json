@@ -1,0 +1,29 @@
+{
+    "$schema": "http://schema.express.azure.com/schemas/2015-01-01-alpha/RolloutSpec.json",
+    "contentVersion": "1.0.0.0",
+    "rolloutMetadata": {
+      "serviceModelPath": "cosmicplatformtest-dev.servicemodel.json",
+      "scopeBindingsPath": "cosmicplatformtest.scopebindings.json",
+      "name": "Cosmic PlatformTest",
+      "rolloutType": "Major",
+      "buildSource": {
+        "parameters": {
+          "versionFile": "buildver.txt"
+        }
+      }
+    },
+   "notification":
+   {
+    "email":{
+      "to": "griffinazurealerts@microsoft.com"
+    }
+   },
+    "orchestratedSteps": [
+      {
+        "name": "DeployCosmicPlatformTest",
+        "targetType": "ServiceResource",
+        "targetName": "CosmicPlatformtest.CosmicApp",
+        "actions": [ "Extension/SubmitRelease"]
+      }
+    ]
+  }

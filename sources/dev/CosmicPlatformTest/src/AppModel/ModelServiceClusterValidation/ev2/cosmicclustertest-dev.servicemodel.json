@@ -1,0 +1,43 @@
+{
+    "$schema": "http://schema.express.azure.com/schemas/2015-01-01-alpha/ServiceModel.json",
+    "contentVersion": "0.0.0.1",
+  
+    "serviceMetadata": {
+        "serviceGroup": "CosmicClusterTest",
+        "environment": "Test"
+    },
+
+    "serviceResourceGroupDefinitions": [
+    {
+        "name":"CosmicClustertest.SRG",
+        "serviceResourceDefinitions": [
+            {
+              "name":"CosmicClustertest.CosmicApp.SRD",
+              "ArmTemplatePath": "templates\\cosmicclustertest.template.json"
+            }
+          ]
+        }
+      ],
+
+      "serviceResourceGroups": [
+        {
+          "azureResourceGroupName": "CosmicClustertest-RG",
+          "location": "West US 2",   
+          "instanceOf": "CosmicClustertest.SRG",
+          "azureSubscriptionId": "ff5bfe84-dc63-4b4c-ad36-2324ae8480ad",
+          "scopeTags": [
+            {
+              "name": "SubmitAppRelease"
+            }
+          ],
+          "serviceResources": [
+            {
+              "name": "CosmicClustertest.CosmicApp",
+              "instanceOf": "CosmicClustertest.CosmicApp.SRD",
+              "ArmParametersPath": "parameters\\cosmiclustertest.parameters.json",
+              "RolloutParametersPath": "parameters\\cosmicclustertest-dev.rolloutparameters.json"
+            }
+          ]
+        }
+      ]
+  }

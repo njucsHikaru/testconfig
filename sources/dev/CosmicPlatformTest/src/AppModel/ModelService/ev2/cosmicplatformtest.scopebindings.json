@@ -1,0 +1,32 @@
+{
+    "$schema": "https://ev2schema.azure.net/schemas/2020-01-01/scopeBindings.json",
+    "contentVersion": "0.0.0.1",
+  
+    "scopeBindings": [
+      {
+        "scopeTagName": "SubmitAppRelease",
+        "bindings": [
+          {
+            "find": "__LOCKBOX_AUTHORIZATION_TOKEN__",
+            "replaceWith": "ToBeReplacedInWorkflowOrVSRM"
+          },
+          {
+            "find": "__RELEASE_CONTEXT__",
+            "replaceWith": "ToBeReplacedInWorkflowOrVSRM"
+          },
+          {
+            "find": "__SOURCE_IMAGE_DIGESTS__",
+            "replaceWith": "ToBeReplacedInWorkflowOrVSRM"
+          },
+          {
+            "find": "__RELEASEID__",
+            "replaceWith": "ToBeReplacedInWorkflowOrVSRM"
+          },
+          {
+            "find": "__DEPLOYMENT_VERSION__",
+            "replaceWith": "ToBeReplacedInWorkflowOrVSRM"
+          }
+        ]
+      }
+    ]
+  }

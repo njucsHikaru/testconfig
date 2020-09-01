@@ -1,0 +1,104 @@
+{
+  "replicas": [
+    {
+      "defaultValue": 3,
+      "resourceName": "cosmic-platform-test-deployment",
+      "resourceKind": "Deployment",
+      "environments": {
+        "dev": 3,
+        "sdf": 5,
+        "msit": 5,
+        "prod": 5
+      }
+    }
+  ],
+  "aadpodidbinding": [
+    {
+      "defaultValue": "cosmic-platformtest-test",
+      "resourceName": "cosmic-platform-test-deployment",
+      "resourceKind": "Deployment",
+      "environments": {
+        "dev": "cosmic-platformtest-test",
+        "sdf": "cosmic-platformtest-sdf",
+        "msit": "cosmic-platformtest-msit",
+        "prod": "cosmic-platformtest-prod"
+      }
+    }
+  ],
+  "env": [
+    {
+      "defaultValue": [
+        {
+          "name": "KeyVaultName",
+          "value": "CosmicPlatformTest-Test"
+        }
+      ],
+      "resourceName": "cosmic-platform-test-deployment",
+      "resourceKind": "Deployment",
+      "environments": {
+        "test": [
+          {
+            "name": "KeyVaultName",
+            "value": "CosmicPlatformTest-Test"
+          }
+        ],
+        "sdf": [
+          {
+            "name": "KeyVaultName",
+            "value": "CosmicPlatformTest-SDF"
+          }
+        ],
+        "msit": [
+          {
+            "name": "KeyVaultName",
+            "value": "CosmicPlatformTest-MSIT"
+          }
+        ],
+        "prod": [
+          {
+            "name": "KeyVaultName",
+            "value": "CosmicPlatformTest-PROD"
+          }
+        ]
+      }
+    }
+  ],
+  "hpa": [
+    {
+      "defaultValue": 
+      {
+        "minReplicas": 1,
+        "maxReplicas": 10,
+        "targetCPUUtilizationPercentage": 60
+      },
+      "resourceName": "cosmic-platform-test-hpa",
+      "resourceKind": "HorizontalPodAutoscaler",
+      "environments": {
+        "test":
+        {
+          "minReplicas": 1,
+          "maxReplicas": 10,
+          "targetCPUUtilizationPercentage": 60
+        },        
+        "sdf": 
+        {
+          "minReplicas": 1,
+          "maxReplicas": 20,
+          "targetCPUUtilizationPercentage": 70
+        },
+        "msit": 
+        {
+          "minReplicas": 1,
+          "maxReplicas": 20,
+          "targetCPUUtilizationPercentage": 70
+        },
+        "prod": 
+        {
+          "minReplicas": 1,
+          "maxReplicas": 20,
+          "targetCPUUtilizationPercentage": 70
+        }
+      }
+    }
+  ]
+}

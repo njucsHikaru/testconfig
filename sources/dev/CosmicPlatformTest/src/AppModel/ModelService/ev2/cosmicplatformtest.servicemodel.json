@@ -1,0 +1,43 @@
+{
+    "$schema": "http://schema.express.azure.com/schemas/2015-01-01-alpha/ServiceModel.json",
+    "contentVersion": "0.0.0.1",
+  
+    "serviceMetadata": {
+        "serviceGroup": "CosmicPlatformtest",
+        "environment": "Prod"
+    },
+
+    "serviceResourceGroupDefinitions": [
+    {
+        "name":"CosmicPlatformtest.SRG",
+        "serviceResourceDefinitions": [
+            {
+              "name":"CosmicPlatformtest.CosmicApp.SRD",
+              "ArmTemplatePath": "templates\\cosmicplatformtest.template.json"
+            }
+          ]
+        }
+      ],
+
+      "serviceResourceGroups": [
+        {
+          "azureResourceGroupName": "CosmicPlatformtest-RG",
+          "location": "West US 2",   
+          "instanceOf": "CosmicPlatformtest.SRG",
+          "azureSubscriptionId": "ff5bfe84-dc63-4b4c-ad36-2324ae8480ad",
+          "scopeTags": [
+            {
+              "name": "SubmitAppRelease"
+            }
+          ],
+          "serviceResources": [
+            {
+              "name": "CosmicPlatformtest.CosmicApp",
+              "instanceOf": "CosmicPlatformtest.CosmicApp.SRD",
+              "ArmParametersPath": "parameters\\cosmicplatformtest.parameters.json",
+              "RolloutParametersPath": "parameters\\cosmicplatformtest.rolloutparameters.json"
+            }
+          ]
+        }
+      ]
+  }

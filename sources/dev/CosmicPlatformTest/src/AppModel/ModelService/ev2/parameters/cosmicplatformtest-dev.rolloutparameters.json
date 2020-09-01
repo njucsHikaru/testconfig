@@ -1,0 +1,40 @@
+{
+  "$schema": "https://ev2schema.azure.net/schemas/2020-01-01/rolloutParameters.json",
+  "contentVersion": "1.0.0.0",
+  "extensions": [
+    {
+      "Name": "SubmitRelease",
+      "Type": "Microsoft.Office.Substrate.Cosmic/AppDeploy",
+      "Version": "2018-05-07",
+      "connectionProperties": {
+        "endpoint": "https://cosmic-appdeployment-service-dev.azurewebsites.net/api/CosmicExtension/",
+        "maxExecutionTime": "PT24H",
+        "authentication": {
+          "type": "SystemCertificateAuthentication"
+          }
+      },
+      "payloadProperties": {
+        "AppPackageSasUrl": {
+          "Reference": {
+            "Path": "deploymentpackage.zip"
+          }
+        },
+        "ActionParametersAuthorizationToken": {
+          "value": "__LOCKBOX_AUTHORIZATION_TOKEN__"
+        },
+        "VisualStudioReleaseManagementContextJson": {
+          "value": __RELEASE_CONTEXT__
+        },
+        "SourceImageDigests": {
+          "value": "__SOURCE_IMAGE_DIGESTS__"
+        },
+        "ReleaseId": {
+          "value": "__RELEASEID__"
+        },
+        "Label":  {
+          "value": ""
+        }
+      }
+    }
+  ]
+}

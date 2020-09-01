@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <CDP_FILE_VERSION_NUMERIC Condition="'$(CDP_FILE_VERSION_NUMERIC)'==''">0.0.0.0</CDP_FILE_VERSION_NUMERIC>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ArtifactsPath>$(OutputPath)\..\ModelServiceClusterTest</ArtifactsPath>
+    <EV2ArtifactsPath>$(ArtifactsPath)\Ev2</EV2ArtifactsPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <IsWindows Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">true</IsWindows>
+    <IsOSX Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">true</IsOSX>
+    <IsLinux Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' == 'true'">true</IsLinux>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Cosmic.Build" Version="1.0.0-Alpha.*" GeneratePathProperty="true" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EV2Templates Include="$(MsBuildProjectDirectory)\ev2\**\*.json" Exclude="$(MsBuildProjectDirectory)\ev2\obj\*" />
+  </ItemGroup>
+
+  <!-- 
+    Making the following artifact generation conditional for Windows. 
+    This target will be executed only when the project is being build on Windows. 
+    GenerateArtifactTask fails in Linux as it is not able to load DLLs on which ArtifactBuildTask.dll depends on. 
+  -->
+  <Target Condition="'$(IsWindows)'=='true'" Name="GenerateArtifact" BeforeTargets="BeforeBuild">
+    <GenerateArtifactTask
+      K8ResourceFile="$(MsBuildProjectDirectory)\app-resources.json"
+      EnvironmentOverrides="$(MsBuildProjectDirectory)\environments.json"
+      PackageFolderRoot="$(ArtifactsPath)\CosmicClusterTestArtifacts"
+      Version="$(CDP_FILE_VERSION_NUMERIC)"
+      AppNamespace="cosmic-cluster-test">
+    </GenerateArtifactTask>
+   </Target>
+  <UsingTask Condition="'$(IsWindows)'=='true'" TaskName="Microsoft.Office.Substrate.Cosmic.ArtifactBuildTask.GenerateArtifactTask" AssemblyFile="$(PkgCosmic_Build)\lib\netstandard2.0\Microsoft.Office.Substrate.Cosmic.ArtifactBuildTask.dll" />
+
+  <Target Name="PackageForEV2" AfterTargets="AfterBuild">
+    <Copy SourceFiles="@(EV2Templates)" DestinationFiles="@(EV2Templates->'$(EV2ArtifactsPath)\%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
+  <Target Name="CreateBuildVersionFile" AfterTargets="PackageForEV2">
+    <WriteLinestoFile File="$(EV2ArtifactsPath)\buildver.txt" Lines="$(CDP_FILE_VERSION_NUMERIC)" Overwrite="true" Encoding="UTF-8" />
+  </Target>
+
+</Project>

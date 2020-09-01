@@ -1,0 +1,165 @@
+{
+   "apiVersion": "v1",
+   "items": [
+      {
+         "apiVersion": "apps/v1",
+         "kind": "Deployment",
+         "metadata": {
+            "name": "cosmic-platform-test-deployment"
+         },
+         "spec": {
+            "progressDeadlineSeconds": 1200,
+            "replicas": null,
+            "selector": {
+               "matchLabels": {
+                  "app": "cosmic-platform-test"
+               }
+            },
+            "template": {
+               "metadata": {
+                  "labels": {
+                     "app": "cosmic-platform-test",
+                     "aadpodidbinding": null
+                  },
+                  "annotations" :{
+                     "prometheus.io/scrape": "true",
+                     "prometheus.io/path" : "/metrics",
+                     "prometheus.io/port": "80",
+                     "prometheus.io/scheme": "http"
+                  }
+               },
+               "spec": {
+                  "containers": [
+                     {
+                        "image": "{{d2services/cosmic-platform-test}}",
+                        "name": "cosmicplatformtest",
+                        "env": [
+                           {
+                               "name": "ENABLE_AUTHN",
+                               "value": "false"
+                           }
+                        ],
+                        "ports": [
+                           {
+                              "containerPort": 80,
+                              "name": "http",
+                              "protocol": "TCP"
+                           },
+                           {
+                              "containerPort": 443,
+                              "name": "https",
+                              "protocol": "TCP"
+                           }
+                        ],
+                        "volumeMounts": [
+                           {
+                              "mountPath": "C:\\workdir",
+                              "name": "workdir-volume",
+                              "readOnly": false
+                           }
+                        ],
+                        "readinessProbe": {
+                           "httpGet": {
+                             "path": "/modelservice/api/summary",
+                             "port": 80
+                           },
+                           "periodSeconds": 10,
+                           "timeoutSeconds": 1
+                        },
+                        "resources": {
+                           "limits": {
+                               "cpu": "500m",
+                               "memory": "300Mi"
+                           },
+                           "requests": {
+                               "cpu": "200m",
+                               "memory": "150Mi"
+                           }
+                       }
+                     }
+                  ],
+                  "nodeSelector": {
+                     "beta.kubernetes.io/os": "windows"
+                  },
+                  "volumes": [
+                     {
+                        "emptyDir": { },
+                        "name": "workdir-volume"
+                     }
+                  ]
+               }
+            }
+         }
+      },
+      {
+         "apiVersion": "v1",
+         "kind": "Service",
+         "metadata": {
+           "name": "cosmic-platform-test-service",
+           "labels": {
+             "app": "cosmic-platform-test"
+           }
+         },
+         "spec": {
+           "ports": [
+             {
+               "name": "http",
+               "port": 80,
+               "targetPort": "http"
+             }
+           ],
+           "selector": {
+             "app": "cosmic-platform-test"
+           }
+         }
+      },
+      {
+         "apiVersion": "extensions/v1beta1",
+         "kind": "Ingress",
+         "metadata": {
+           "name": "cosmic-platform-test-ingress",
+           "annotations": {
+             "kubernetes.io/ingress.class": "azure/application-gateway",
+             "appgw.ingress.kubernetes.io/backend-protocol": "http",
+             "appgw.ingress.kubernetes.io/appgw-ssl-certificate": "cluster-ssl"
+           }
+         },
+         "spec": {
+           "rules": [
+             {
+               "http": {
+                 "paths": [
+                   {
+                     "path": "/modelservice/api/*",
+                     "backend": {
+                       "serviceName": "cosmic-platform-test-service",
+                       "servicePort": 80
+                     }
+                   }
+                 ]
+               }
+             }
+           ]
+         }
+       },
+       {
+         "apiVersion": "autoscaling/v1",
+         "kind": "HorizontalPodAutoscaler",
+         "metadata": {
+             "name": "cosmic-platform-test-hpa",
+             "namespace": "cosmic-platform-test"
+         },
+         "spec": {
+             "maxReplicas": null,
+             "minReplicas": null,
+             "scaleTargetRef": {
+                 "apiVersion": "apps/v1",
+                 "kind": "Deployment",
+                 "name": "cosmic-platform-test-deployment"
+             },
+             "targetCPUUtilizationPercentage": null
+         }
+     }
+   ],
+   "kind": "List"
+}
